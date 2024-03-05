@@ -13,11 +13,9 @@
 }
 
 .container {
-  background-image: linear-gradient(
-    to right,
-    var(--main-color),
-    var(--secondary-color)
-  );
+  background-image: linear-gradient(to right,
+      var(--main-color),
+      var(--secondary-color));
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -65,11 +63,9 @@
   border: 2px solid var(--main-color);
   border-left: 0;
   border-radius: 0 4px 4px 0;
-  background: linear-gradient(
-    to right,
-    var(--main-color),
-    var(--secondary-color)
-  );
+  background: linear-gradient(to right,
+      var(--main-color),
+      var(--secondary-color));
   color: #fff;
   display: flex;
   justify-content: center;
@@ -80,11 +76,9 @@
 }
 
 .head form button:hover {
-  background: linear-gradient(
-    to right,
-    var(--secondary-color),
-    var(--main-color)
-  );
+  background: linear-gradient(to right,
+      var(--secondary-color),
+      var(--main-color));
 }
 
 .head form button svg {
@@ -191,4 +185,13 @@
 
 .delete-modal .actions button:last-of-type {
   background-color: red;
+}
+
+.delete-modal input {
+  width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  outline: none;
 }
