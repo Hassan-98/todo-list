@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+:root {
+  --main-color: #2c14fd;
+  --secondary-color: #5966fe;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Rubik', sans-serif;
+}
+
+.container {
+  background-image: linear-gradient(
+    to right,
+    var(--main-color),
+    var(--secondary-color)
+  );
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  padding: 30px;
+  background-color: #151825;
+  color: #fff;
+  border-radius: 8px;
+  width: 45%;
+}
+
+.head h1 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.head form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.head form input {
+  padding: 10px 15px;
+  width: calc(100% - 115px);
+  background-color: transparent;
+  outline: 0;
+  border: 2px solid var(--main-color);
+  border-right: 0;
+  border-radius: 4px 0 0 4px;
+  color: #fff;
+}
+
+.head form input::placeholder {
+  color: #aaa;
+}
+
+.head form button {
+  padding: 10px 15px;
+  border: 2px solid var(--main-color);
+  border-left: 0;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(
+    to right,
+    var(--main-color),
+    var(--secondary-color)
+  );
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  width: 115px;
+}
+
+.head form button:hover {
+  background: linear-gradient(
+    to right,
+    var(--secondary-color),
+    var(--main-color)
+  );
+}
+
+.head form button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* TODO LIST */
+.todos_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.todos_list .todo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c14fd;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.todos_list .todo .actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.todos_list .todo button {
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+}
+
+.todos_list .todo button svg {
+  width: 16px;
+  height: 16px;
+  color: #fff;
+  pointer-events: none;
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+}
+
+.delete-modal {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  scale: 0;
+  transform-origin: center center;
+  transition: all 0.3s ease;
+}
+
+.modal.open {
+  z-index: 1;
+  opacity: 1;
+}
+
+.modal.open .delete-modal {
+  scale: 1;
+}
+
+.delete-modal p {
+  margin-bottom: 20px;
+}
+
+.delete-modal .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-modal .actions button {
+  background-color: green;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  padding: 8px 20px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.delete-modal .actions button:last-of-type {
+  background-color: red;
+}
