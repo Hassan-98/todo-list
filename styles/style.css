@@ -13,13 +13,16 @@
 }
 
 .container {
-  background-image: linear-gradient(to right,
-      var(--main-color),
-      var(--secondary-color));
+  background-image: linear-gradient(
+    to right,
+    var(--main-color),
+    var(--secondary-color)
+  );
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .content {
@@ -63,9 +66,11 @@
   border: 2px solid var(--main-color);
   border-left: 0;
   border-radius: 0 4px 4px 0;
-  background: linear-gradient(to right,
-      var(--main-color),
-      var(--secondary-color));
+  background: linear-gradient(
+    to right,
+    var(--main-color),
+    var(--secondary-color)
+  );
   color: #fff;
   display: flex;
   justify-content: center;
@@ -76,9 +81,11 @@
 }
 
 .head form button:hover {
-  background: linear-gradient(to right,
-      var(--secondary-color),
-      var(--main-color));
+  background: linear-gradient(
+    to right,
+    var(--secondary-color),
+    var(--main-color)
+  );
 }
 
 .head form button svg {
@@ -103,6 +110,16 @@
   border-radius: 4px;
 }
 
+.todos_list .todo.delete-animation {
+  animation: delete-animation 400ms ease-in;
+}
+
+@keyframes delete-animation {
+  100% {
+    transform: scale(0);
+  }
+}
+
 .todos_list .todo .actions {
   display: flex;
   justify-content: center;
@@ -120,7 +137,7 @@
 .todos_list .todo button svg {
   width: 16px;
   height: 16px;
-  color: #fff;
+  color: #ffffff;
   pointer-events: none;
 }
 

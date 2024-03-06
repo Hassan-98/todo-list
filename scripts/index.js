@@ -9,19 +9,39 @@ const editModalCancelBtn = document.querySelector('.edit-modal-cancel');
 const editModalConfirmBtn = document.querySelector('.edit-modal-confirm');
 const editInput = document.getElementById("editInput");
 
-
 let selectedTodo;
 
 const todos = [
   {
-    content: "addInput.value 1",
-    isCompleted: false
+    content: "Todo 1",
+    isCompleted: false,
+    bgColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+    isPinned: false,
+    date: new Date().getTime() - 4,
   },
   {
-    content: "addInput.value 2",
-    isCompleted: false
+    content: "Todo 2",
+    isCompleted: false,
+    bgColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+    isPinned: false,
+    date: new Date().getTime() - 3,
+  },
+  {
+    content: "Todo 3",
+    isCompleted: false,
+    bgColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+    isPinned: false,
+    date: new Date().getTime() - 2,
+  },
+  {
+    content: "Todo 4",
+    isCompleted: false,
+    bgColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+    isPinned: false,
+    date: new Date().getTime() - 1,
   }
 ];
+
 
 function renderTodos() {
   todos_list.innerHTML = '';
@@ -30,10 +50,16 @@ function renderTodos() {
     todos_list.innerHTML = `<p class="empty">No Todos</p>`;
   }
 
-  todos.forEach((todo, index) => {
+  const sortedTodo = [
+    ...todos.filter(todo => todo.isPinned),
+    ...todos.filter(todo => !todo.isPinned).sort((a, b) => a.date - b.date)
+  ];
 
+  sortedTodo.forEach((todo, index) => {
     const todoEl = document.createElement('div');
+    todoEl.setAttribute('data-index', index);
     todoEl.classList.add('todo');
+    todoEl.style.backgroundColor = todo.bgColor;
 
     const todoContent = document.createElement('p');
     todoContent.textContent = todo.content;
@@ -43,13 +69,14 @@ function renderTodos() {
 
     const todoEditBtn = document.createElement('button');
     todoEditBtn.setAttribute('data-index', index);
-
     todoEditBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32" data-index="${index}">
           <path fill="currentColor"
             d="M27.87 7.863L23.024 4.82l-7.89 12.566l4.843 3.04zM14.395 21.25l-.107 2.855l2.527-1.337l2.35-1.24l-4.673-2.936zM29.163 3.24L26.63 1.647a1.364 1.364 0 0 0-1.88.43l-1 1.588l4.843 3.042l1-1.586c.4-.64.21-1.483-.43-1.883zm-3.965 23.82c0 .275-.225.5-.5.5h-19a.5.5 0 0 1-.5-.5v-19a.5.5 0 0 1 .5-.5h13.244l1.884-3H5.698c-1.93 0-3.5 1.57-3.5 3.5v19c0 1.93 1.57 3.5 3.5 3.5h19c1.93 0 3.5-1.57 3.5-3.5V11.097l-3 4.776v11.19z" />
         </svg>
       `;
+    todoEditBtn.addEventListener('click', showEditPopup)
+
     const todoDeleteBtn = document.createElement('button');
     todoDeleteBtn.setAttribute('data-index', index);
     todoDeleteBtn.innerHTML = `
@@ -62,12 +89,29 @@ function renderTodos() {
         </g>
       </svg>
       `;
-    todoActionsEl.appendChild(todoEditBtn);
-    todoActionsEl.appendChild(todoDeleteBtn);
-
     todoDeleteBtn.addEventListener('click', showDeletePopup);
 
-    todoEditBtn.addEventListener('click', showEditPopup)
+    const todoPinBtn = document.createElement('button');
+    todoPinBtn.setAttribute('data-index', index);
+    todoPinBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" data-index="${index}">
+        <path fill="currentColor" d="m9 9l1.914 1.914L8 13.828V14h6l2 2h-3v4l-1 3l-1-3v-4H6v-3l3-3zm8-7v2l-2 1v5l3 3v2.461l-5-5.001V4h-2v4.46l-2-2V5L7 4V2z"/><path fill="currentColor" d="M2.27 2.27L1 3.54L20.46 23l1.27-1.27L11 11z"/>
+      </svg>
+      `;
+
+    if (todo.isPinned) {
+      todoPinBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" data-index="${index}">
+          <path fill="currentColor" d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2zm-7.2 2l1.2-1.2V4h4v8.8l1.2 1.2z"/>
+        </svg>
+      `;
+    }
+
+    todoPinBtn.addEventListener('click', handleTogglePinTodo)
+
+    todoActionsEl.appendChild(todoPinBtn);
+    todoActionsEl.appendChild(todoEditBtn);
+    todoActionsEl.appendChild(todoDeleteBtn);
 
     todoEl.appendChild(todoContent);
     todoEl.appendChild(todoActionsEl);
@@ -85,7 +129,10 @@ addButton.addEventListener('click', (event) => {
 
   todos.push({
     content: addInput.value,
-    isCompleted: false
+    isCompleted: false,
+    bgColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+    isPinned: false,
+    date: new Date().getTime(),
   });
 
   renderTodos();
@@ -108,9 +155,14 @@ function closeDeleteModal() {
 deleteModalConfirmBtn.addEventListener('click', handleDeleteTodo);
 
 function handleDeleteTodo() {
-  todos.splice(selectedTodo, 1);
-  renderTodos();
+  const el = document.querySelector(`.todo[data-index="${selectedTodo}"]`);
+  el.classList.add('delete-animation');
   closeDeleteModal();
+
+  setTimeout(() => {
+    todos.splice(selectedTodo, 1);
+    renderTodos();
+  }, 400);
 }
 
 function showEditPopup(event) {
@@ -134,3 +186,25 @@ function saveTodo() {
 }
 
 editModalConfirmBtn.addEventListener('click', saveTodo);
+
+function handleTogglePinTodo(event) {
+  const selectedTodoIndex = event.target.getAttribute('data-index');
+
+  const sortedTodo = [
+    ...todos.filter(todo => todo.isPinned),
+    ...todos.filter(todo => !todo.isPinned).sort((a, b) => a.date - b.date)
+  ];
+
+  const savedTodo = sortedTodo[selectedTodoIndex];
+
+  if (savedTodo.isPinned) {
+    savedTodo.isPinned = false;
+  } else {
+    savedTodo.isPinned = true;
+
+    todos.splice(selectedTodoIndex, 1);
+    todos.unshift(savedTodo);
+  }
+
+  renderTodos();
+}
