@@ -162,7 +162,7 @@ function handleDeleteTodo() {
   setTimeout(() => {
     todos.splice(selectedTodo, 1);
     renderTodos();
-  }, 400);
+  }, 300);
 }
 
 function showEditPopup(event) {

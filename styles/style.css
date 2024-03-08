@@ -111,7 +111,7 @@
 }
 
 .todos_list .todo.delete-animation {
-  animation: delete-animation 400ms ease-in;
+  animation: delete-animation 300ms ease-out;
 }
 
 @keyframes delete-animation {
