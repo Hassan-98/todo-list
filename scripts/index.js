@@ -8,13 +8,19 @@ const editModal = document.querySelector('.modal.edit');
 const editModalCancelBtn = document.querySelector('.edit-modal-cancel');
 const editModalConfirmBtn = document.querySelector('.edit-modal-confirm');
 const editInput = document.getElementById("editInput");
+const sortAsecButton = document.querySelector('.sort-asec');
+const sortDescButton = document.querySelector('.sort-desc');
+const paginationContainer = document.querySelector('.pagination');
 
+const perPage = 4;
+let currentPage = 1;
+let sortByGlobal = 'asec';
 let selectedTodo;
 
 const todos = [
   {
     content: "Todo 1",
-    isCompleted: false,
+    isCompleted: true,
     bgColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
     isPinned: false,
     date: new Date().getTime() - 4,
@@ -42,6 +48,28 @@ const todos = [
   }
 ];
 
+function sortedTodo() {
+  return [
+    ...todos.filter(todo => todo.isPinned),
+    ...todos.filter(todo => !todo.isPinned).sort((a, b) => {
+      if (sortByGlobal === 'desc') {
+        return b.date - a.date;
+      } else {
+        return a.date - b.date;
+      }
+    })
+  ]
+};
+
+sortAsecButton.onclick = function () {
+  sortByGlobal = 'asec';
+  renderTodos();
+}
+
+sortDescButton.onclick = function () {
+  sortByGlobal = 'desc';
+  renderTodos();
+}
 
 function renderTodos() {
   todos_list.innerHTML = '';
@@ -50,12 +78,7 @@ function renderTodos() {
     todos_list.innerHTML = `<p class="empty">No Todos</p>`;
   }
 
-  const sortedTodo = [
-    ...todos.filter(todo => todo.isPinned),
-    ...todos.filter(todo => !todo.isPinned).sort((a, b) => a.date - b.date)
-  ];
-
-  sortedTodo.forEach((todo, index) => {
+  sortedTodo().slice((currentPage * perPage - perPage), (currentPage * perPage)).forEach((todo, index) => {
     const todoEl = document.createElement('div');
     todoEl.setAttribute('data-index', index);
     todoEl.classList.add('todo');
@@ -63,6 +86,7 @@ function renderTodos() {
 
     const todoContent = document.createElement('p');
     todoContent.textContent = todo.content;
+    if (todo.isCompleted) todoContent.style.textDecoration = 'line-through';
 
     const todoActionsEl = document.createElement('div');
     todoActionsEl.classList.add('actions');
@@ -118,9 +142,30 @@ function renderTodos() {
 
     todos_list.appendChild(todoEl);
   });
+
+  renderPaginationButtons();
 }
 
 renderTodos();
+
+function renderPaginationButtons() {
+  const pagesCount = Math.ceil(todos.length / perPage);
+  paginationContainer.innerHTML = '';
+
+  Array(pagesCount).fill(null).forEach((_, index) => {
+    const button = document.createElement('button');
+    button.textContent = index + 1;
+    button.addEventListener('click', paginate);
+    paginationContainer.appendChild(button);
+  });
+}
+
+renderPaginationButtons();
+
+function paginate(event) {
+  currentPage = +event.target.innerHTML;
+  renderTodos();
+}
 
 addButton.addEventListener('click', (event) => {
   event.preventDefault();
@@ -168,7 +213,8 @@ function handleDeleteTodo() {
 function showEditPopup(event) {
   selectedTodo = event.target.getAttribute('data-index');
   editModal.classList.add('open');
-  editInput.value = todos[selectedTodo].content
+
+  editInput.value = sortedTodo()[selectedTodo].content
   editInput.focus();
 }
 
@@ -190,20 +236,16 @@ editModalConfirmBtn.addEventListener('click', saveTodo);
 function handleTogglePinTodo(event) {
   const selectedTodoIndex = event.target.getAttribute('data-index');
 
-  const sortedTodo = [
-    ...todos.filter(todo => todo.isPinned),
-    ...todos.filter(todo => !todo.isPinned).sort((a, b) => a.date - b.date)
-  ];
-
-  const savedTodo = sortedTodo[selectedTodoIndex];
+  const sorted = sortedTodo();
+  const savedTodo = sorted[selectedTodoIndex];
 
   if (savedTodo.isPinned) {
     savedTodo.isPinned = false;
   } else {
     savedTodo.isPinned = true;
 
-    todos.splice(selectedTodoIndex, 1);
-    todos.unshift(savedTodo);
+    sorted.splice(selectedTodoIndex, 1);
+    sorted.unshift(savedTodo);
   }
 
   renderTodos();
